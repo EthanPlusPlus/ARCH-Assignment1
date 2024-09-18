@@ -60,11 +60,11 @@ loadSampleRate:
     jr      $ra
 
 loadByteRate:
-    lw      $s3,                22($s0)
+    lw      $s3,                26($s0)
     jr      $ra
 
 loadBitsPerSample:
-    lh      $s4,                22($s0)
+    lh      $s4,                32($s0)
     jr      $ra
 
 
