@@ -4,17 +4,19 @@ enterBytes:     .asciiz "Enter the file size (in bytes):\n"
 infoMsg:        .asciiz "Information about the wave file:\n================================\n"
 hardDir:        .asciiz "/Users/ethan/Documents/UCT/second-year/CSC-S/Assignments/Repos/ARCH1/arch_assign_input/question1_input/q1_t1_in.wav"
 nextLine:       .asciiz "\n"
+nullPoint:      .asciiz ""
 channelsMsg:    .asciiz "Number of channels: "
 sampleMsg:      .asciiz "Sample rate: "
 bytesMsg:       .asciiz "Byte rate: "
 bitsMsg:        .asciiz "Bits per sample: "
-                .align  256
+                .align  2
 dir:            .space  256
-    #bytes:          .space  10000000
 buffer:         .space  45
 
 .text
                 .globl  main
+    #/Users/ethan/Documents/UCT/second-year/CSC-S/Assignments/Repos/ARCH1/arch_assign_input/question1_input/q1_t1_in.wav
+    #/Users/q1_t1_in.wav
 main:
 
     li      $v0,                4
@@ -22,6 +24,9 @@ main:
     syscall
 
     jal     getdir
+
+    la      $t0,                dir
+    jal     removeNewline
 
     li      $v0,                4
     la      $a0,                enterBytes
@@ -131,9 +136,19 @@ readFile:
     jr      $ra
 
 
-addNull:
-    la      $t0,                dir
-    
+removeNewline:
+    lb      $t1,                0($t0)
+    beq     $t1,                $zero,          endLoop                                                                                         # if $t1 == zerot1 then goto target
+    beq     $t1,                10,             replaceLine
+    addi    $t0,                $t0,            1
+    j       removeNewline
+replaceLine:
+    li      $t1,                0
+    sb      $t1,                0($t0)
+    j       endLoop
+
+endLoop:
+    jr      $ra
 
 
 getbytes:                                                                                                                                       #asks for input bytes(integer), saves in bytes
@@ -147,7 +162,7 @@ getbytes:                                                                       
 getdir:
     li      $v0,                8
     la      $a0,                dir
-    li      $a1,                526
+    li      $a1,                256
     syscall
     jr      $ra
 
